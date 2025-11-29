@@ -1,52 +1,39 @@
-
-### LISTAR USUARIOS
+### Obtener todos los usuarios
 GET http://localhost:3005/usuario
 
-###
-
-### OBTENER UN USUARIO POR ID (datos de registro)
+### Obtener un usuario por id
 GET http://localhost:3005/usuario/1
 
-###
 
-### CREAR USUARIO
-POST http://localhost:3005/usuario
+### Registrar usuario (con hash + token)
+POST http://localhost:3005/usuario/registrar
 Content-Type: application/json
 
 {
-  "nombre": "Aiden Gamer",
-  "apellido": "RADO",
-  "email": "aid@example.com",
-  "dni": "1",
-  "password": "AidenGames",
-  "telefono": "969750401",
-  "direccion": "Av. Gamer 123",
-  "ciudad": "Lima",
-  "admin": false
+  "nombre": "Aiden",
+  "apellido": "tester2",
+  "email": "aprueba@example.com",
+  "password": "AidenGames123",
+  "dni":723
 }
 
-###
 
-### ACTUALIZAR DATOS BÁSICOS DEL USUARIO
-PUT http://localhost:3005/usuario
+### Login usuario (devuelve token)
+POST http://localhost:3005/usuario/login
 Content-Type: application/json
 
 {
-  "id": 1,
-  "nombre": "Aiden Gamer",
-  "apellido": "Client Updated",
-  "telefono": "999888777",
-  "direccion": "Av. Gamer 456",
-  "ciudad": "Lima"
+  "email": "aiden@example.com",
+  "password": "AidenNuevo123"
 }
 
-###
 
-### CAMBIAR CONTRASEÑA (tu endpoint)
-PUT http://localhost:3005/usuario/1/password
+### Cambiar contraseña (usuario registrado)
+# Ojo: aquí NO estamos validando token todavía, solo la contraseña actual
+PUT http://localhost:3005/usuario/3/password
 Content-Type: application/json
 
 {
-  "passwordActual": "123456",
-  "passwordNueva": "NuevoPass123"
-} 
+  "passwordActual": "AidenGames123",
+  "passwordNueva": "AidenNuevo123"
+}
