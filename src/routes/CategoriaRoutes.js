@@ -1,14 +1,21 @@
 import express from 'express';
-import controller from '../controllers/OrdenController.js';
-
-console.log(' OrdenRoutes cargado');     
+import controller from '../controllers/CategoriaController.js';
 
 const router = express.Router();
 
+// Listado de Categorías (Admin) – aquí luego puedes poner middleware de auth/admin
 router.get('/', controller.findAll);
+
+// Detalle de una categoría
 router.get('/:id', controller.findOne);
+
+// Agregar categoría (Admin)
 router.post('/', controller.create);
+
+// Editar categoría (Admin)
 router.put('/', controller.update);
+
+// Eliminar categoría (Admin)
 router.delete('/:id', controller.remove);
 
 export default router;

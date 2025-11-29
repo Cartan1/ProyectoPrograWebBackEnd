@@ -1,0 +1,41 @@
+### LISTAR TODAS LAS ÓRDENES (CRUD normal)
+GET http://localhost:3005/orden
+
+###
+
+### DETALLE DE ORDEN POR ID (tu parte importante)
+GET http://localhost:3005/orden/101
+
+###
+
+### CREAR ORDEN (test simple)
+POST http://localhost:3005/orden
+Content-Type: application/json
+
+{
+  "idusuario": 1,
+  "subtotal": 100.50,
+  "total": 120.50,
+  "metododeentrega": "Delivery",
+  "direccionenvio": "Av. Siempre Viva 123",
+  "nrotarjeta": "4111111111111111",
+  "tipotarjeta": "Visa",
+  "estado": "Pendiente"
+}
+
+
+###
+
+### ACTUALIZAR ORDEN (CRUD normal)
+PUT http://localhost:3005/orden
+Content-Type: application/json
+
+{
+  "id": 101,
+  "estado": "Entregado"
+}
+
+###
+
+### ELIMINAR ORDEN
+DELETE http://localhost:3005/orden/101

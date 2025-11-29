@@ -1,0 +1,39 @@
+### LISTAR TODAS LAS CATEGORÍAS
+GET http://localhost:3005/categoria
+
+###
+
+### OBTENER UNA CATEGORÍA POR ID
+GET http://localhost:3005/categoria/1
+
+###
+
+### CREAR CATEGORÍA (Admin)
+POST http://localhost:3005/categoria
+Content-Type: application/json
+
+{
+  "categoria": "Consolas 1",
+  "descripcion": "Consolas de videojuegos de última generación",
+  "imagenCat": "https://plazavea.vteximg.com.br/arquivos/categor%C3%ADa-VIDEOJUEGOS-PS5-D.png"
+}
+
+
+###
+
+### EDITAR CATEGORÍA (Admin)
+PUT http://localhost:3005/categoria
+Content-Type: application/json
+
+{
+  "id": 1,
+  "categoria": "Consolas PRO",
+  "descripcion": "Consolas de videojuegos y accesorios oficiales",
+  "imagenCat": "https://midominio.com/img/consolas_update.jpg"
+}
+
+
+###
+
+### ELIMINAR CATEGORÍA (Admin)
+DELETE http://localhost:3005/categoria/1

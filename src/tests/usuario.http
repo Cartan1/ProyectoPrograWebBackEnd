@@ -1,0 +1,52 @@
+
+### LISTAR USUARIOS
+GET http://localhost:3005/usuario
+
+###
+
+### OBTENER UN USUARIO POR ID (datos de registro)
+GET http://localhost:3005/usuario/1
+
+###
+
+### CREAR USUARIO
+POST http://localhost:3005/usuario
+Content-Type: application/json
+
+{
+  "nombre": "Aiden Gamer",
+  "apellido": "RADO",
+  "email": "aid@example.com",
+  "dni": "1",
+  "password": "AidenGames",
+  "telefono": "969750401",
+  "direccion": "Av. Gamer 123",
+  "ciudad": "Lima",
+  "admin": false
+}
+
+###
+
+### ACTUALIZAR DATOS BÁSICOS DEL USUARIO
+PUT http://localhost:3005/usuario
+Content-Type: application/json
+
+{
+  "id": 1,
+  "nombre": "Aiden Gamer",
+  "apellido": "Client Updated",
+  "telefono": "999888777",
+  "direccion": "Av. Gamer 456",
+  "ciudad": "Lima"
+}
+
+###
+
+### CAMBIAR CONTRASEÑA (tu endpoint)
+PUT http://localhost:3005/usuario/1/password
+Content-Type: application/json
+
+{
+  "passwordActual": "123456",
+  "passwordNueva": "NuevoPass123"
+} 
