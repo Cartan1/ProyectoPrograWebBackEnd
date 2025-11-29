@@ -14,9 +14,17 @@ class RepositoryBase {
 
     async create(entity) {
         try {
-            return await this.model.create(entity);
+            console.log('🔵 RepositoryBase.create - Intentando crear:', entity);
+            const result = await this.model.create(entity);
+            console.log('🟢 RepositoryBase.create - Éxito:', result.toJSON());
+            return result;
         } catch (error) {
-            console.log(error);
+            console.error('🔴 RepositoryBase.create - Error completo:', {
+                mensaje: error.message,
+                nombre: error.name,
+                sql: error.sql,
+                errores: error.errors
+            });
             return null;
         }
     }
@@ -24,7 +32,7 @@ class RepositoryBase {
     async findOne(id) {
         try {
             return await this.model.findOne({
-                where: { id: id }  
+                where: { id: id }
             });
         } catch (error) {
             console.log(error);
@@ -35,7 +43,7 @@ class RepositoryBase {
     async update(entity) {
         try {
             return await this.model.update(entity, {
-                where: { id: entity.id }  
+                where: { id: entity.id }
             });
         } catch (error) {
             console.log(error);
@@ -46,7 +54,7 @@ class RepositoryBase {
     async remove(id) {
         try {
             return await this.model.destroy({
-                where: { id: id }  
+                where: { id: id }
             });
         } catch (error) {
             console.log(error);

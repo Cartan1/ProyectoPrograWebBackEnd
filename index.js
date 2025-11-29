@@ -61,8 +61,8 @@ import cors from 'cors';
 import carritoRouter from './src/routes/CarritoDeCompraRoutes.js';
 import usuarioRouter from './src/routes/UsuarioRoutes.js';
 import categoriaRoutes from './src/routes/CategoriaRoutes.js';
-import ordenRoutes from './src/routes/OrdenRoutes.js';   
-
+import ordenRoutes from './src/routes/OrdenRoutes.js';
+import productoRoutes from './src/routes/ProductoRoutes.js';
 const app = express();
 
 app.use(cors());
@@ -80,8 +80,8 @@ app.get('/', (req, resp) => {
 app.use('/carrito', carritoRouter);
 app.use('/usuario', usuarioRouter);
 app.use('/categoria', categoriaRoutes);
-app.use('/orden', ordenRoutes);                        
-
+app.use('/orden', ordenRoutes);
+app.use('/producto', productoRoutes);
 // catch-all para debug de 404
 app.use((req, res) => {
   console.log('❌ Ruta no encontrada:', req.method, req.url);

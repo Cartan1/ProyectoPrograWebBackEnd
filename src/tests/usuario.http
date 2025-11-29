@@ -10,11 +10,15 @@ POST http://localhost:3005/usuario/registrar
 Content-Type: application/json
 
 {
-  "nombre": "Aiden",
-  "apellido": "tester2",
-  "email": "aprueba@example.com",
-  "password": "AidenGames123",
-  "dni":723
+  "nombre": "Aiden Gamer",
+  "apellido": "RADO",
+  "email": "asasaaasda@assssa.com",
+  "dni": "112222214",
+  "password": "AidenGames",
+  "telefono": "969750401",
+  "direccion": "Av. Gamer 123",
+  "ciudad": "Lima",
+  "admin": false
 }
 
 
@@ -28,8 +32,7 @@ Content-Type: application/json
 }
 
 
-### Cambiar contraseña (usuario registrado)
-# Ojo: aquí NO estamos validando token todavía, solo la contraseña actual
+
 PUT http://localhost:3005/usuario/3/password
 Content-Type: application/json
 
@@ -37,3 +40,4 @@ Content-Type: application/json
   "passwordActual": "AidenGames123",
   "passwordNueva": "AidenNuevo123"
 }
+ 
