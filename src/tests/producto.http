@@ -1,0 +1,45 @@
+# LISTAR TODOS LOS PRODUCTOS
+GET http://localhost:3005/producto
+
+###
+
+# DETALLE DE PRODUCTO POR ID
+GET http://localhost:3005/producto/1
+
+###
+
+# CREAR PRODUCTO
+POST http://localhost:3005/producto
+Content-Type: application/json
+
+{
+  "nombre": "Laptop HP Pavilion",
+  "descripcion": "Laptop de 15 pulgadas, 8GB RAM, 256GB SSD",
+  "marca": "HP",
+  "stock": 10,
+  "precio": 799.99,
+  "imagen": "laptop-hp.jpg",
+  "idcategoria": 1
+}
+
+###
+
+# ACTUALIZAR PRODUCTO
+PUT http://localhost:3005/producto
+Content-Type: application/json
+
+{
+  "id": 1,
+  "nombre": "Laptop HP Pavilion 2024",
+  "descripcion": "Laptop actualizada de 15 pulgadas, 16GB RAM, 512GB SSD",
+  "marca": "HP",
+  "stock": 15,
+  "precio": 899.99,
+  "imagen": "laptop-hp-2024.jpg",
+  "idcategoria": 1
+}
+
+###
+
+# ELIMINAR PRODUCTO
+DELETE http://localhost:3005/producto/1
