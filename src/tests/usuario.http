@@ -28,7 +28,7 @@ Content-Type: application/json
 
 {
   "email": "aiden@example.com",
-  "password": "Aiden123"
+  "password": "NuevaClaveRecuperada123"
 }
 
 ###
@@ -40,5 +40,24 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiO
 {
   "passwordActual": "AidenActual123",
   "passwordNueva": "Aiden123"
+}
+
+### Solicitar recuperación (Simulado)
+POST http://localhost:3005/usuario/recuperar-password
+Content-Type: application/json
+
+{
+  "email": "aiden@example.com"
+}
+
+###
+
+### Restablecer contraseña (Olvido)
+POST http://localhost:3005/usuario/reset-password
+Content-Type: application/json
+
+{
+  "email": "aiden@example.com",
+  "newPassword": "NuevaClaveRecuperada123"
 }
  

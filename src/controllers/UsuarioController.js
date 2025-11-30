@@ -20,7 +20,6 @@ const findOne = async (req, res) => {
 const create = async (req, res) => {
   const object = req.body;
 
-  //  HASHER LA CONTRASEÑA ANTES DE GUARDAR
   if (object.password) {
     const salt = await bcrypt.genSalt(10);
     object.password = await bcrypt.hash(object.password, salt);
@@ -32,7 +31,6 @@ const create = async (req, res) => {
     return sendResults(createdObj, res, 'Error al crear el usuario.');
   }
 
-  // (Opcional) Webhook si lo necesitas
   try {
     await axios.post('https://bytatileon.app.n8n.cloud/webhook/nuevo_usuario', {
       idusuario: createdObj.id,
@@ -75,7 +73,7 @@ const login = async (req, res) => {
   }
 };
 
-// ============ CAMBIAR CONTRASEÑA (Ya perfecto) ==============
+// ============ CAMBIAR CONTRASEÑA (Logueado) ==============
 const changePassword = async (req, res) => {
   const { id } = req.params;
   const { passwordActual, passwordNueva } = req.body;
@@ -85,6 +83,25 @@ const changePassword = async (req, res) => {
   if (!result.success) return res.status(400).json(result);
 
   return res.status(200).json(result);
+};
+
+// ============ RECUPERAR CONTRASEÑA (Olvido) ==============
+const requestPasswordReset = async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ message: 'El email es obligatorio' });
+
+  const result = await usuarioService.solicitarRecuperacion(email);
+  return res.status(200).json(result);
+};
+
+const resetPassword = async (req, res) => {
+  const { email, newPassword } = req.body;
+  if (!email || !newPassword) return res.status(400).json({ message: 'Faltan datos' });
+
+  const result = await usuarioService.restablecerPassword(email, newPassword);
+  
+  if (result.success) return res.status(200).json(result);
+  return res.status(400).json(result);
 };
 
 // ============ Actualizar estado ======================
@@ -116,5 +133,7 @@ export default {
   remove,
   changePassword,
   login,
-  cambiarEstado
+  cambiarEstado,
+  requestPasswordReset,
+  resetPassword
 };
