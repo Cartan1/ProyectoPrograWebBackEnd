@@ -23,6 +23,7 @@ import controller from '../controllers/UsuarioController.js';
 const router = express.Router();
 
 // CRUD básico
+router.put('/:id/estado', controller.cambiarEstado);
 router.get('/', controller.findAll);
 router.get('/:id', controller.findOne);
 router.post('/', controller.create);
