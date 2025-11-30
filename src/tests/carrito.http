@@ -1,37 +1,41 @@
 GET http://localhost:3005/usuario
 
 ###
-POST http://localhost:3005/usuario
+GET http://localhost:3005/carrito
+
+###
+POST http://localhost:3005/carrito
 Content-Type: application/json
 
 {
-  "nombre": "Juan",
-  "apellido": "Romaina",
-  "email": "juan@test.com",
-  "dni": "12345678",
-  "password": "123456",
-  "telefono": "987654321",
-  "direccion": "Av. Universitaria 123",
-  "ciudad": "Lima",
-  "admin": false
+  
+  "idusuario": 1
+
+
 }
 ###
 POST http://localhost:3005/carrito
 Content-Type: application/json
 
 {
-  "idusuario": 1
+  "idusuario": 2
 }
 
 ###
 
-PUT http://localhost:3005/usuario
+GET http://localhost:3005/carrito/usuario/1
+
+###
+GET http://localhost:3005/itemcarrito/carrito/1
+
+
+###
+POST http://localhost:3005/itemcarrito
 Content-Type: application/json
 
 {
-  "id":1,
-  "nombre": "Juan",
-  "apellido": "Romaina"
+  "idcarrito": 1,
+  "idproducto": 5,
+  "cantidad": 2
 }
-###
-GET http://localhost:3005/orden
+

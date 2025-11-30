@@ -1,49 +1,60 @@
 import repository from "../repositories/CarritoDeCompraRepository.js";
 
 const findAll = async (req, res) => {
-    const respuesta = await repository.findAll();
-    return sendResults(respuesta, res, "No se encontraron carritos.");
-}
+    try {
+        const data = await repository.findAll();
+        return ok(res, data);
+    } catch {
+        return error(res, "Error obteniendo carritos");
+    }
+};
 
 const findOne = async (req, res) => {
-    const id = req.params.id;
-    const result = await repository.findOne(id);
-    return sendResults(result, res, "Carrito no encontrado.");
-}
+    try {
+        const data = await repository.findOne(req.params.id);
+        return ok(res, data);
+    } catch {
+        return error(res, "Carrito no encontrado");
+    }
+};
 
 const findByUsuario = async (req, res) => {
   try {
-    const carrito = await repository.findByUsuario(req.params.idusuario);
-    return res.json({ success: true, data: carrito });
-  } catch (error) {
-    console.error("ERROR findByUsuario:", error);
-    return res.status(500).json({ success: false, message: "Error interno." });
+    const data = await repository.findByUsuario(req.params.idusuario);
+    return ok(res, data);
+  } catch {
+    return error(res, "Error interno");
   }
 };
 
 const create = async (req, res) => {
-    const object = req.body;
-    const createdObj = await repository.create(object);
-    return sendResults(createdObj, res, "Error al crear carrito.");
-}
+    try {
+        const data = await repository.create(req.body);
+        return ok(res, data);
+    } catch {
+        return error(res, "Error al crear carrito");
+    }
+};
 
 const update = async (req, res) => {
-    const object = req.body;
-    const updatedObj = await repository.update(object);
-    return sendResults(updatedObj, res, "Error al actualizar carrito.");
-}
+    try {
+        const data = await repository.update(req.body);
+        return ok(res, data);
+    } catch {
+        return error(res, "Error al actualizar carrito");
+    }
+};
 
 const remove = async (req, res) => {
-    const id = req.params.id;
-    const result = await repository.remove(id);
-    return sendResults(result, res, "Error al eliminar carrito.");
-}
+    try {
+        const data = await repository.remove(req.params.id);
+        return ok(res, data);
+    } catch {
+        return error(res, "Error al eliminar carrito");
+    }
+};
 
-const sendResults = (result, res, message) => {
-    if (result)
-        return res.status(200).json(result);
-    else
-        return res.status(500).json({ message });
-}
+const ok = (res, data) => res.status(200).json({ success: true, data });
+const error = (res, message) => res.status(400).json({ success: false, message });
 
-export default { findAll, findOne,findByUsuario, create, update, remove };
+export default { findAll, findOne, findByUsuario, create, update, remove };

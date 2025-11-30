@@ -13,7 +13,7 @@ const findOne = async (req, res) => {
 
 const findByOrden = async (req, res) => {
   try {
-    const items = await itemOrdenRepository.findByOrden(req.params.idorden);
+    const items = await repository.findByOrden(req.params.idorden);
     return res.json({ success: true, data: items });
   } catch (error) {
     console.error("ERROR findByOrden:", error);

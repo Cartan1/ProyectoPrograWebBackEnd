@@ -12,13 +12,13 @@ const findOne = async (req, res) => {
 }
 
 const findByCarrito = async (req, res) => {
-  try {
-    const items = await itemCarritoRepository.findByCarrito(req.params.idcarrito);
-    return res.json({ success: true, data: items });
-  } catch (error) {
-    console.error("ERROR findByCarrito:", error);
-    return res.status(500).json({ success: false, message: "Error interno." });
-  }
+    try {
+        const items = await repository.findByCarrito(req.params.idcarrito);
+        return res.json({ success: true, data: items });
+    } catch (error) {
+        console.error("ERROR findByCarrito:", error);
+        return res.status(500).json({ success: false, message: "Error interno." });
+    }
 }
 
 const create = async (req, res) => {
@@ -39,6 +39,17 @@ const remove = async (req, res) => {
     return sendResults(result, res, "Error al eliminar item.");
 }
 
+const removeByCarrito = async (req, res) => {
+    try {
+        const deleted = await repository.removeByCarrito(req.params.idcarrito);
+        return res.status(200).json({ success: true, data: deleted });
+    } catch (error) {
+        console.error("ERROR removeByCarrito ItemDeCarrito:", error);
+        return res.status(500).json({ success: false, message: "Error interno." });
+    }
+};
+
+
 const sendResults = (result, res, message) => {
     if (result)
         return res.status(200).json(result);
@@ -46,4 +57,4 @@ const sendResults = (result, res, message) => {
         return res.status(500).json({ message });
 }
 
-export default { findAll, findOne, findByCarrito,  create, update, remove };
+export default { findAll, findOne, findByCarrito,removeByCarrito, create, update, remove };

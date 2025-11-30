@@ -16,6 +16,18 @@ class ItemDeCarritoRepository extends RepositoryBase {
             return null;
         }
     }
+
+    async removeByCarrito(idcarrito) {
+        try {
+            return await this.model.destroy({
+                where: { idcarrito },
+            });
+        } catch (error) {
+            console.log("ERROR removeByCarrito:", error);
+            return null;
+        }
+    }
+
 }
 
 const itemCarritoRepository = new ItemDeCarritoRepository();
