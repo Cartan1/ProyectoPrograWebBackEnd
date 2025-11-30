@@ -65,6 +65,16 @@ const remove = async (req, res) => {
   return sendResults(result, res, 'Error al eliminar el usuario.');
 };
 
+// ================= LOGIN =================
+const login = async (req, res) => {
+  const result = await usuarioService.login(req.body);
+  if (result.success) {
+    return res.status(200).json(result);
+  } else {
+    return res.status(401).json(result);
+  }
+};
+
 // ============ CAMBIAR CONTRASEÑA (Ya perfecto) ==============
 const changePassword = async (req, res) => {
   const { id } = req.params;
@@ -88,8 +98,9 @@ const sendResults = (result, res, message) => {
 export default {
   findAll,
   findOne,
-  create,     // YA HASHEA
+  create,
   update,
   remove,
-  changePassword
+  changePassword,
+  login
 };
