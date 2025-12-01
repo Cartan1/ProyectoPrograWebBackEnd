@@ -1,4 +1,5 @@
 import repository from '../repositories/OrdenRepository.js';
+import usuarioRepository from '../repositories/UsuarioRepository.js';
 import axios from "axios";
 
 const findAll = async (req, res) => {
@@ -36,14 +37,13 @@ const findOne = async (req, res) => {
     }
 };
 
-
-
 const create = async (req, res) => {
     try {
         console.log("📦 PAYLOAD RECIBIDO EN BACKEND:", req.body);
 
         const {
             idusuario,
+            email, // Recibir email del body por si acaso
             subtotal,
             total,
             metododeentrega,
@@ -85,11 +85,21 @@ const create = async (req, res) => {
             });
         }
 
-        // Optional: Webhook
+        // Obtener info del usuario para el correo
+        const usuarioInfo = await usuarioRepository.findOne(idusuario);
+        console.log("🔍 Buscando usuario con ID:", idusuario);
+        console.log("👤 Usuario encontrado:", usuarioInfo ? usuarioInfo.toJSON() : "NO ENCONTRADO");
+
+        // Usar el email del usuario en DB, o el que viene en el body, o null
+        const emailFinal = usuarioInfo?.email || email || null;
+        const nombreFinal = usuarioInfo?.nombre || null;
+
+        // Enviar al webhook con email y nombre
         try {
             await axios.post("https://bytatileon.app.n8n.cloud/webhook/nueva_orden", {
-                ...createdObj,
-                ...req.body
+                ...createdObj.toJSON(),
+                email: emailFinal,
+                nombre: nombreFinal
             });
         } catch (err) {
             console.error("⚠️ No se pudo enviar al webhook N8N:", err.message);
@@ -101,8 +111,6 @@ const create = async (req, res) => {
         return sendError(error, res);
     }
 };
-
-
 
 const update = async (req, res) => {
     try {
@@ -140,4 +148,3 @@ export default {
     update,
     remove
 };
-
