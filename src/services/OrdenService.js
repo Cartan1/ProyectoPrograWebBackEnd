@@ -1,93 +1,143 @@
-import ordenRepository from '../repositories/OrdenRepository.js';
-import itemDeLaOrdenRepository from '../repositories/ItemDeLaOrdenRepository.js';
-import Producto from '../models/Producto.js';
-import Categoria from '../models/Categoria.js'; 
+import repository from '../repositories/OrdenRepository.js';
+import usuarioRepository from '../repositories/UsuarioRepository.js';
+import axios from "axios";
+import ordenService from '../services/OrdenService.js';
 
-const crearOrden = async (idusuario, items, datosEnvio, metodoPago) => {
-  try {
-
-    const subtotal = items.reduce((acum, item) => acum + item.precio * item.cantidad, 0);
-    const total = subtotal;
-
-    const nuevaOrden = await ordenRepository.create({
-      idusuario,
-      subtotal,
-      total,
-      metododeentrega: metodoPago, 
-      direccionenvio: datosEnvio.direccion,
-      estado: "pagado"
-    });
-
-    for (const item of items) {
-      await itemDeLaOrdenRepository.create({
-        idorden: nuevaOrden.id,
-        idproducto: item.id,
-        cantidad: item.cantidad,
-        preciounitario: item.precio
-      });
+const findAll = async (req, res) => {
+    try {
+        const respuesta = await repository.findAll();
+        return sendResults(respuesta, res, 'No se encontraron órdenes.');
+    } catch (error) {
+        return sendError(error, res);
     }
-
-    return nuevaOrden;
-
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
 };
 
-const obtenerOrdenDetalle = async (id) => {
-  try {
-    const orden = await ordenRepository.findOne(id);
-    if (!orden) return null;
+const findByUsuario = async (req, res) => {
+    try {
+        const { idusuario } = req.params;
+        const ordenes = await repository.findByUsuario(idusuario);
 
-    const items = await itemDeLaOrdenRepository.model.findAll({
-      where: { idorden: id }
-    });
-
-    const idsProductos = items.map(i => i.idproducto);
-
-    const productos = idsProductos.length
-      ? await Producto.findAll({ where: { id: idsProductos } })
-      : [];
-
-    // detalle item
-    const itemsDetallados = await Promise.all(
-      items.map(async (item) => {
-        const prod = productos.find(p => p.id === item.idproducto);
-
-        let categoriaNombre = null;
-
-        if (prod) {
-          const idCategoria = prod.idcategoria ?? prod.idCategoria;
-          if (idCategoria) {
-            const categoria = await Categoria.findOne({ where: { id: idCategoria } });
-            categoriaNombre = categoria?.nombre ?? null;
-          }
+        if (!ordenes) {
+            return res.status(404).json({ message: "No se encontraron órdenes." });
         }
 
-        return {
-          id: item.id,
-          idProducto: item.idproducto,
-          cantidad: item.cantidad,
-          precioUnitario: item.preciounitario,
-          nombre: prod?.nombre,
-          imagen: prod?.imagen,
-          descripcion: prod?.descripcion,
-          categoriaNombre: categoriaNombre
-        };
-      })
-    );
-
-    return {
-      ...orden.dataValues,
-      items: itemsDetallados
-    };
-
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
+        return res.status(200).json(ordenes);
+    } catch (error) {
+        return sendError(error, res);
+    }
 };
 
-const ordenService = { crearOrden, obtenerOrdenDetalle };
-export default ordenService;
+const findOne = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const result = await ordenService.obtenerOrdenDetalle(id);
+        return sendResults(result, res, 'Orden no encontrada.');
+    } catch (error) {
+        return sendError(error, res);
+    }
+};
+
+const create = async (req, res) => {
+    try {
+        console.log("📦 PAYLOAD RECIBIDO EN BACKEND:", req.body);
+
+        const {
+            idusuario,
+            email,
+            subtotal,
+            total,
+            metododeentrega,
+            direccionenvio,
+            metodopago,
+            nrotarjeta,
+            tipotarjeta
+        } = req.body;
+
+        if (!idusuario || !total || !metododeentrega || !metodopago) {
+            return res.status(400).json({
+                success: false,
+                message: "Faltan campos obligatorios para crear la orden."
+            });
+        }
+
+        const data = {
+            idusuario,
+            fecha: new Date(),
+            subtotal: subtotal ?? total,
+            total,
+            metododeentrega,
+            direccionenvio,
+            metodopago,
+            nrotarjeta: metodopago === "TARJETA" ? nrotarjeta : null,
+            tipotarjeta: metodopago === "TARJETA" ? tipotarjeta : null,
+            estado: "Pendiente"
+        };
+
+        const createdObj = await repository.create(data);
+
+        if (!createdObj) {
+            return res.status(500).json({
+                success: false,
+                message: "Error al crear orden en la base de datos."
+            });
+        }
+
+        const usuarioInfo = await usuarioRepository.findOne(idusuario);
+        const emailFinal = usuarioInfo?.email || email || null;
+        const nombreFinal = usuarioInfo?.nombre || null;
+
+        try {
+            await axios.post("https://bytatileon.app.n8n.cloud/webhook/nueva_orden", {
+                ...createdObj.toJSON(),
+                fecha: createdObj.fecha,
+                metodopago: createdObj.metodopago,
+                email: emailFinal,
+                nombre: nombreFinal
+            });
+        } catch (err) {
+            console.error("⚠️ No se pudo enviar al webhook N8N:", err.message);
+        }
+
+        return res.status(200).json({ success: true, data: createdObj });
+
+    } catch (error) {
+        return sendError(error, res);
+    }
+};
+
+const update = async (req, res) => {
+    try {
+        const updatedObj = await repository.update(req.body);
+        return sendResults(updatedObj, res, 'Error al actualizar orden.');
+    } catch (error) {
+        return sendError(error, res);
+    }
+};
+
+const remove = async (req, res) => {
+    try {
+        const deleted = await repository.remove(req.params.id);
+        return sendResults(deleted, res, 'Error al eliminar orden.');
+    } catch (error) {
+        return sendError(error, res);
+    }
+};
+
+const sendResults = (result, res, message) => {
+    if (result) return res.status(200).json(result);
+    return res.status(404).json({ message });
+};
+
+const sendError = (error, res) => {
+    console.error("❌ Error en OrdenController:", error);
+    return res.status(500).json({ message: "Error interno en servidor.", error: error.message });
+};
+
+export default {
+    findAll,
+    findOne,
+    findByUsuario,
+    create,
+    update,
+    remove
+};
