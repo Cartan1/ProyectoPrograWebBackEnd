@@ -1,7 +1,7 @@
 import repository from '../repositories/OrdenRepository.js';
 import usuarioRepository from '../repositories/UsuarioRepository.js';
 import axios from "axios";
-import ordenService from '../services/OrdenService.js'; 
+import ordenService from '../services/OrdenService.js';
 
 const findAll = async (req, res) => {
     try {
@@ -30,9 +30,7 @@ const findByUsuario = async (req, res) => {
 const findOne = async (req, res) => {
     try {
         const id = req.params.id;
-
         const result = await ordenService.obtenerOrdenDetalle(id);
-
         return sendResults(result, res, 'Orden no encontrada.');
     } catch (error) {
         return sendError(error, res);
@@ -45,7 +43,7 @@ const create = async (req, res) => {
 
         const {
             idusuario,
-            email, 
+            email,
             subtotal,
             total,
             metododeentrega,
@@ -55,7 +53,6 @@ const create = async (req, res) => {
             tipotarjeta
         } = req.body;
 
-        // VALIDAR CAMPOS
         if (!idusuario || !total || !metododeentrega || !metodopago) {
             return res.status(400).json({
                 success: false,
@@ -63,7 +60,6 @@ const create = async (req, res) => {
             });
         }
 
-        // Construcción del objeto final que sí se guardará
         const data = {
             idusuario,
             fecha: new Date(),
@@ -77,7 +73,6 @@ const create = async (req, res) => {
             estado: "Pendiente"
         };
 
-        // Registrar la orden
         const createdObj = await repository.create(data);
 
         if (!createdObj) {
@@ -87,16 +82,10 @@ const create = async (req, res) => {
             });
         }
 
-        // Obtener info del usuario para el correo
         const usuarioInfo = await usuarioRepository.findOne(idusuario);
-        console.log("🔍 Buscando usuario con ID:", idusuario);
-        console.log("👤 Usuario encontrado:", usuarioInfo ? usuarioInfo.toJSON() : "NO ENCONTRADO");
-
-        // Usar el email del usuario en DB, o el que viene en el body, o null
         const emailFinal = usuarioInfo?.email || email || null;
         const nombreFinal = usuarioInfo?.nombre || null;
 
-        // Enviar al webhook con email y nombre
         try {
             await axios.post("https://bytatileon.app.n8n.cloud/webhook/nueva_orden", {
                 ...createdObj.toJSON(),
