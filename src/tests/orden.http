@@ -43,3 +43,16 @@ DELETE http://localhost:3005/orden/1
 ### Obtener órdenes de un usuario específico (con auth)
 GET http://localhost:3005/orden/usuario/1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhaWRlbkBleGFtcGxlLmNvbSIsIm5vbWJyZSI6IkFpZGVuIEdhbWVyIiwiaWF0IjoxNzY0NTM4NDE5LCJleHAiOjE3NjUxNDMyMTl9.TFYP5Lc4nslx32fF36ypw59eBiDptKWhLo300kaMCLU
+
+
+
+### Obtener detalle de orden 1
+GET https://proyecto-progra-web-back-end.vercel.app/orden/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Content-Type: application/json
+
+
+### Probar detalle de orden 1 con auth
+GET http://localhost:3005/orden/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
